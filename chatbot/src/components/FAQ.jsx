@@ -12,16 +12,16 @@ const FAQ = () => {
 
   return (
     <>
-     {/* <div className="flex justify-center mb-4">
-        <div className="bg-gray-200 p-3 rounded-full">
-          <img src={logo} alt="Logo" className="w-16 h-16 rounded-full" />
-        </div>
-      </div> */}
+    
 
-<h1 className='text-black text-xl font-semibold mt-2 flex items-center'>
+    <h1 className='text-black text-xl font-semibold mt-2 flex items-center'>
   Frequently Asked Questions 
-  <span className="inline-flex items-center justify-center text-black text-2xl bg-yellow-200 rounded-xl w-8 h-8 ml-2">？</span>
+  <span className="inline-flex items-center justify-center text-black text-2xl rounded-full bg-yellow-200  w-8 h-8 ml-2 leading-none">
+  ？
+</span>
+
 </h1>
+
 
    
     <div className="space-y-3 mt-10 ">
