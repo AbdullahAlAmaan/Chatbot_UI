@@ -26,7 +26,6 @@ const ChatPage = ({ onBackToLanding }) => {
     setInputValue(e.target.value); 
   };
   
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -59,14 +58,22 @@ const ChatPage = ({ onBackToLanding }) => {
         }
       );
 
-      console.log('Response from server:', response.data);
+      console.log('Response from server:', response);
       const processedText = response.data
       .split('\n\n')  // Split on double newlines to separate events
-      .map(chunk => chunk.replace(/^data: /gm,''))  // Remove "data: " prefix from each line
+      .map(chunk => chunk.replace(/^data: /gm, ''))  // Remove "data: " prefix from each line
       .join('')  // Join all the parts into a single string
+      .replace(/\\n/g, '')  // Remove \n that are embedded in the string
+      .replace(/\\/g, '')  // Remove all backslashes
       .replace(/""/g, '')  // Remove all double quotes
-    .replace(/"\s/g, '')  // Remove remaining quotes followed by spaces
-    .replace(/"/g, '');
+      .replace(/"\s/g, '')  // Remove remaining quotes followed by spaces
+      .replace(/"/g, '');  // Remove any remaining stray quotes
+    
+
+      
+  
+  
+  
   
     console.log('Processed text:', processedText);
       
@@ -118,37 +125,83 @@ const ChatPage = ({ onBackToLanding }) => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-        {renderedMessages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex items-start space-x-2 ${message.isUser ? 'justify-end' : ''}`}
-          >
-            {!message.isUser && (
-              <div className="bg-gray-800 text-white rounded-full p-2">
-                <img src={message.icon} alt="Logo" className="w-8 h-8 rounded-full" />
+     <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+  {renderedMessages.map((message) => (
+    <div
+      key={message.id}
+      className={`flex items-start space-x-2 ${message.isUser ? 'justify-end' : ''}`}
+    >
+      {!message.isUser && (
+        <div className="bg-gray-800 text-white rounded-full p-2">
+          <img src={message.icon} alt="Logo" className="w-8 h-8 rounded-full" />
+        </div>
+      )}
+      <div
+        className={`${
+          message.isUser ? 'bg-gray-500' : 'bg-gray-700'
+        } text-white rounded-lg p-3 max-w-xs`}
+      >
+        {message.productName || message.imageUrl || message.productUrl ? (
+          <div className="flex flex-col space-y-4 p-4 max-w-md mx-auto bg-gray-100 rounded-lg shadow-lg">
+            {message.imageUrl && (
+              <div className="flex items-center space-x-4">
+                <img
+                  src={message.imageUrl}
+                  alt={message.productName || 'Product Image'}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div>
+                  {message.productName && (
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {message.productName}
+                    </h2>
+                  )}
+                  {message.productCode && (
+                    <p className="text-sm text-gray-500">
+                      Product Code: {message.productCode}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
-            <div
-              className={`${
-                message.isUser ? 'bg-gray-500' : 'bg-gray-700'
-              } text-white rounded-lg p-3 max-w-xs`}
-            >
-              {message.text}
-            </div>
+            {message.description && (
+              <p className="text-gray-700">
+                {message.description}
+              </p>
+            )}
+            {message.productUrl && (
+              <a
+                href={message.productUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View Product
+              </a>
+            )}
           </div>
-        ))}
-        {isLoading && (
-          <div className="flex items-start space-x-2">
-            <div className="bg-gray-800 text-white rounded-full p-2">
-              <img src={logo} alt="Loading" className="w-8 h-8 rounded-full" />
-            </div>
-            <div className="bg-gray-800 text-white rounded-lg p-3 max-w-xs">
-              Typing...
-            </div>
-          </div>
+        ) : (
+          // Fallback to plain text if no structured content is found
+          message.text.split('\n').map((line, index) => (
+            <p key={index}>{line}</p>
+          ))
         )}
       </div>
+    </div>
+  ))}
+  {isLoading && (
+    <div className="flex items-start space-x-2">
+      <div className="bg-gray-800 text-white rounded-full p-2">
+        <img src={logo} alt="Loading" className="w-8 h-8 rounded-full" />
+      </div>
+      <div className="bg-gray-800 text-white rounded-lg p-3 max-w-xs">
+        Typing...
+      </div>
+    </div>
+  )}
+</div>
+
+
 
       {/* Message Input */}
       <form onSubmit={handleSubmit} className="p-4 bg-white flex items-center border-t border-gray-300 rounded-b-lg">

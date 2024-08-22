@@ -8,10 +8,17 @@ import logo from './assets/logo.jpg';
 const App = () => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasConversationStarted, setHasConversationStarted] = useState(false);
+
 
   const handleStartChat = () => {
     setIsChatStarted(true);
+    setHasConversationStarted(true); 
   };
+  const handleContinueChat = () => {
+    setIsChatStarted(true);  
+  };
+  
 
   const handleBackToLanding = () => {
     setIsChatStarted(false);
@@ -58,7 +65,8 @@ const App = () => {
 
             {/* Conditional Rendering of Chat Page or Landing Page */}
             {isChatStarted ? (
-              <ChatPage onBackToLanding={handleBackToLanding} />
+              <ChatPage onBackToLanding={handleBackToLanding} 
+              isNewConversation={!hasConversationStarted} />
             ) : (
               <div className="relative bg-white rounded-lg p-3 shadow-lg">
                 {/* Top-to-bottom gradient background covering 40% of height */}
@@ -75,7 +83,12 @@ const App = () => {
                   {/* FAQ and Footer Container */}
                   <div className="relative z-10 mt-5 bg-white rounded-lg p-3 shadow-lg outline outline-offset-2 outline-gray-500/10">
                     <FAQ />
-                    <Footer onStartChat={handleStartChat} />
+                    <Footer 
+  onStartChat={handleStartChat} 
+  onContinueChat={handleContinueChat} 
+  showContinueConversation={hasConversationStarted} 
+/>
+
                   </div>
                 </div>
               </div>
